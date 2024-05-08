@@ -1,6 +1,7 @@
 package org.example;
 
 import java.net.http.HttpRequest;
+import java.util.List;
 
 public class Main {
 
@@ -10,14 +11,17 @@ public class Main {
             final String userName = "sharedservices";
             final String passWord = "p@ssword03";
             final String applicationKey = "npo67wopV4oKVu5g";
-            final String apiUrl = "https://identitysso.nxt.com.betfair/api/login?username=" + userName + "&password=" + passWord;
+            final String apiUrlLogin = "https://identitysso.nxt.com.betfair/api/login?username=" + userName + "&password=" + passWord;
+//
 
 //call api request class
             ApiRequest apiRequest = new ApiRequest(applicationKey);
-            HttpRequest httpRequest = apiRequest.createRequest(apiUrl);
+            HttpRequest httpRequest = apiRequest.createRequest(apiUrlLogin);
 //call response class
-            Response responseHandler = new Response();
-            String responseBody = responseHandler.retrieveResponse(httpRequest);
+            Response sessionInfo = new Response();
+            String responseBody = sessionInfo.retrieveResponse(httpRequest);
+            //System.out.println(responseBody);
+
 //extract token
             GetToken getToken = new GetToken(responseBody);
             String token = getToken.extractToken();
@@ -25,10 +29,16 @@ public class Main {
 //retrieve events to choose from
 //
             ShowEvents showEvents = new ShowEvents();
-            showEvents.fetchEvents(token, applicationKey);
             String availableEvents = showEvents.fetchEvents(token, applicationKey);
             System.out.println(availableEvents);
+            System.out.println(Events.eventsList);
+
+            ApiRequest callCompetitions = new ApiRequest();
+
+
+//
         }}
 
-//logger class - look at library - doesn't give access to system
+//IT IS NOT PASSING THE TOKEN INTO FETCH EVENTS
 
+// questions for reeja - is it because of different link for log in and events list api call ?

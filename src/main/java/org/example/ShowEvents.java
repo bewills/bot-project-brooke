@@ -1,35 +1,42 @@
 package org.example;
 import java.io.IOException;
-import java.net.URI;
+import java.util.*;
+import java.util.List;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import org.json.JSONObject;
+
+
+
 
 
 
 public class ShowEvents {
 
+
     String eventsApiURL = "http://ang.nxt.internal/exchange/betting/rest/v1.0/listEventTypes/";
 
-
-
-    public HttpRequest createEventsRequest(String apiUrl, String token, String applicationKey) {
-        return HttpRequest.newBuilder()
-                .uri(URI.create(eventsApiURL))
-                .header("X-Application", applicationKey)
-                .header("Accept", "application/json")
-                .header("X-Authentication", token)
-                .POST(HttpRequest.BodyPublishers.ofString("{\"filter\" : { }}"))
-                .build();
-    }
     public String fetchEvents(String token, String applicationKey) throws IOException, InterruptedException {
 
         HttpClient httpClient = HttpClient.newHttpClient();
+        HttpRequest allEventsRequest = ApiRequest.createEventsRequest(token, applicationKey);
 
-        HttpRequest allEventsRequest = createEventsRequest(eventsApiURL, applicationKey, token);
+
         HttpResponse<String> response = httpClient.send(allEventsRequest, HttpResponse.BodyHandlers.ofString());
+        JSONArray responseData = new JSONArray(response.body());
+//        for (int i = 0; i <responseData.length(); i++) {
+//           Object eventNames= responseData.get(i);
+//            System.out.println("Event Type: " + eventNames.toString());
+
+        Events.addEventNamesFromJsonResponse(responseData);
         return response.body();
 
+    }
 }
-}
+//
+//}
+//
+
