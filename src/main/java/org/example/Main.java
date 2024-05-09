@@ -1,5 +1,5 @@
 package org.example;
-
+import java.util.Scanner;
 import java.net.http.HttpRequest;
 import java.util.List;
 
@@ -26,14 +26,20 @@ public class Main {
             GetToken getToken = new GetToken(responseBody);
             String token = getToken.extractToken();
             System.out.println("Session token is: " + token);
+
 //retrieve events to choose from
 //
             ShowEvents showEvents = new ShowEvents();
             String availableEvents = showEvents.fetchEvents(token, applicationKey);
-            System.out.println(availableEvents);
+//            System.out.println(availableEvents);
             System.out.println(Events.eventsList);
+//list competitions
+           ApiRequest callCompetitions = new ApiRequest(applicationKey);
+           String availableCompetitions = apiRequest.callCompetitions(token, applicationKey);
+           System.out.println(availableCompetitions);
+           System.out.println(Competitions.compList);
 
-            ApiRequest callCompetitions = new ApiRequest();
+
 
 
 //

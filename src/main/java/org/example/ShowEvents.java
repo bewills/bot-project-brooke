@@ -9,11 +9,6 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
-
-
-
-
-
 public class ShowEvents {
 
 
@@ -27,9 +22,6 @@ public class ShowEvents {
 
         HttpResponse<String> response = httpClient.send(allEventsRequest, HttpResponse.BodyHandlers.ofString());
         JSONArray responseData = new JSONArray(response.body());
-//        for (int i = 0; i <responseData.length(); i++) {
-//           Object eventNames= responseData.get(i);
-//            System.out.println("Event Type: " + eventNames.toString());
 
         Events.addEventNamesFromJsonResponse(responseData);
         return response.body();
