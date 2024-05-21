@@ -12,7 +12,7 @@ import java.net.http.HttpResponse;
 public class ShowEvents {
 
 
-    String eventsApiURL = "http://ang.nxt.internal/exchange/betting/rest/v1.0/listEventTypes/";
+//    String eventsApiURL = "http://ang.nxt.internal/exchange/betting/rest/v1.0/listEventTypes/";
 
     public String fetchEvents(String token, String applicationKey) throws IOException, InterruptedException {
 
@@ -24,11 +24,10 @@ public class ShowEvents {
         JSONArray responseData = new JSONArray(response.body());
 
         Events.addEventNamesFromJsonResponse(responseData);
+        System.out.println(responseData);
         return response.body();
 
     }
 }
-//
-//}
-//
+
 

@@ -17,12 +17,20 @@ public class Events {
        eventsList.add(eventName);
     }
     public static void addEventNamesFromJsonResponse(JSONArray responseData) {
-        for (int i = 0; i < responseData.length(); i++) {
-            JSONObject eventObject = responseData.getJSONObject(i);
-            JSONObject eventTypeObject = eventObject.getJSONObject("eventType");
-            String eventName = eventTypeObject.getString("name");
-            eventsList.add(eventName);
+        {
+            if (responseData != null && responseData.length() > 0) {
+                for (int i = 0; i < responseData.length(); i++) {
+                    JSONObject eventObject = responseData.getJSONObject(i);
+                    JSONObject eventTypeObject = eventObject.getJSONObject("eventType");
+                    String eventName = eventTypeObject.getString("name");
+                    eventsList.add(eventName);
+                }
+            } else {
+                // Handle the case when the JSONArray is null or empty
+                System.out.println("No competitions data available.");
+            }
+
         }
-//
-}}
+    }}
+
 //LOMBOK

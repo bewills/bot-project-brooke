@@ -16,7 +16,7 @@ public class ApiRequest {
 //    final String userName = "sharedservices";
 //    final String passWord = "p@ssword03";
     private final String applicationKey;
-    static String eventsApiURL = "http://ang.nxt.internal/exchange/betting/rest/v1.0/listEventTypes/";
+//    static String eventsApiURL = "http://ang.nxt.internal/exchange/betting/rest/v1.0/listEventTypes/";
 
     public ApiRequest (String applicationKey) {
         HttpClient client = HttpClient.newBuilder().build();
