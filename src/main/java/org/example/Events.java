@@ -4,33 +4,37 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Events {
+
     public String eventId;
     public String eventName;
 
-    public static ArrayList<String> eventsList = new ArrayList<>();
+    public static ArrayList<String> eventList = new ArrayList<>();
+    private static Map<String, String> eventMap = new HashMap<>();
 
-    public Events(String eventName, String eventId) {
-       this.eventId = eventId;
-       this.eventName = eventName;
-       eventsList.add(eventName);
+    public Events (String eventId, String eventName){
+
+        this.eventId = eventId;
+        this.eventName = eventName;
+        eventList.add(eventName);
+        eventMap.put(eventName, eventId);
     }
-    public static void addEventNamesFromJsonResponse(JSONArray responseData) {
-        {
-            if (responseData != null && responseData.length() > 0) {
-                for (int i = 0; i < responseData.length(); i++) {
-                    JSONObject eventObject = responseData.getJSONObject(i);
-                    JSONObject eventTypeObject = eventObject.getJSONObject("eventType");
-                    String eventName = eventTypeObject.getString("name");
-                    eventsList.add(eventName);
-                }
-            } else {
-                // Handle the case when the JSONArray is null or empty
-                System.out.println("No competitions data available.");
+
+    public static void addEventsFromJsonResponse(JSONArray eventsData){
+        if (eventsData != null && eventsData.length() > 0) {
+            for (int i = 0; i < eventsData.length(); i++){
+                JSONObject eventObj = eventsData.getJSONObject(i);
+                JSONObject eventObjectDetails = eventObj.getJSONObject("event");
+                String eventName = eventObjectDetails.getString("name");
+                String eventId = eventObjectDetails.getString("id");
+                eventList.add(eventName);
+
             }
 
         }
-    }}
 
-//LOMBOK
+    }
+}
