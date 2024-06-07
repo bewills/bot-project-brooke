@@ -9,6 +9,7 @@ import static org.example.Competitions.*;
 import static org.example.EventType.eventTypeList;
 import static org.example.EventType.eventTypeList;
 import static org.example.Events.eventList;
+import static org.example.marketCatalogue.mktCatList;
 
 public class Main {
 
@@ -43,21 +44,19 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Welcome to your Betfair Bot! Please choose a sport to place a bet on from the list below: " + eventTypeList);
 
-        Set<String> eventsSet = new HashSet<>();
-        for (String event : eventTypeList) {
-            eventsSet.add(event.trim().toLowerCase());
+        Set<String> eventTypeSet = new HashSet<>();
+        for (String eventType : eventTypeList) {
+            eventTypeSet.add(eventType.trim().toLowerCase());
         }
-
+//user decides on available event type
         String userEventTypeChoice;
 
         while (true) {
             userEventTypeChoice = scanner.nextLine().toLowerCase().trim();
-            if (eventsSet.contains(userEventTypeChoice.toLowerCase()))
-            {
+            if (eventTypeSet.contains(userEventTypeChoice.toLowerCase())) {
                 System.out.println("You selected " + userEventTypeChoice);
                 break;
-            }
-            else {
+            } else {
                 System.out.println("Invalid choice. Please choose from the provided list.");
             }
         }
@@ -67,12 +66,11 @@ public class Main {
         System.out.println(compList);
 
 
-
         Set<String> compSet = new HashSet<>();
         for (String comp : compList) {
             compSet.add(comp.trim().toLowerCase());
         }
-
+// user decides on available competitions
         String userCompChoice;
 
 
@@ -91,9 +89,47 @@ public class Main {
         String availableEvents = apiRequest.callEvents(token, applicationKey, userCompChoice);
         System.out.println(eventList);
 
-    }
-}
 
+        Set<String> eventSet = new HashSet<>();
+        for (String event : eventList) {
+            eventSet.add(event.trim().toLowerCase());
+        }
+
+        String userEventChoice;
+        while (true) {
+            userEventChoice = scanner.nextLine().toLowerCase().trim();
+            if (eventSet.contains((userEventChoice.toLowerCase()))) {
+                System.out.println("You selected " + userEventChoice);
+                break;
+            } else {
+                System.out.println("Invalid choice. Please choose from the provided list.");
+            }
+
+        }
+
+        System.out.println("Please choose from the following markets to see market data, please choose one: ");
+        String userCompIdForMkts = null;
+        String availableMarkets = apiRequest.callMktCat(token, applicationKey, userCompIdForMkts, userCompChoice);
+        System.out.println(mktCatList);
+
+        Set<String> mktCatSet = new HashSet<>();
+        for (String event : mktCatList) {
+            mktCatSet.add(event.trim().toLowerCase());
+        String userMarketChoice;
+
+        while (true){
+            userMarketChoice = scanner.nextLine().toLowerCase().trim();
+            if (mktCatSet.contains(userMarketChoice.toLowerCase())){
+                System.out.println("You selected " + userMarketChoice);
+                break;
+            }
+            else {
+                System.out.println("Invalid choice. Please choose from the provided list.");
+            }
+
+        }
+    }
+}}
 
 
 

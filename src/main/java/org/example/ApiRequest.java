@@ -96,6 +96,32 @@ public class ApiRequest {
         return response.body();
 
     }
+
+    public static HttpRequest createMarketCatalogue(String token, String applicationKey, String userCompId) {
+        String requestMktCatBody = String.format("{\"filter\": {\"competitionIds\": [\"%s\"]}, \"maxResults\": 100, " +
+                "\"marketProjection\": [\"COMPETITION\", \"EVENT\", \"EVENT_TYPE\"] }", userCompId);
+        return newBuilder()
+                .uri(URI.create(apiURL + listMarketCatalogue))
+                .header("X-Application", applicationKey)
+                .header("Accept", "application/json")
+                .header("Content-Type", "application/json")
+                .header("X-Authentication", token)
+                .POST(BodyPublishers.ofString(requestMktCatBody))
+                .build();
+    }
+
+    public String callMktCat(String token, String applicationKey, String userCompIdForMkts, String userCompChoice) throws IOException, InterruptedException {
+        userCompIdForMkts = Competitions.getCompId(userCompChoice);
+
+        HttpClient httpClient = HttpClient.newHttpClient();
+        HttpRequest createMarketCatalogue = ApiRequest.createMarketCatalogue(token, applicationKey, userCompIdForMkts);
+        HttpResponse<String> response = httpClient.send(createMarketCatalogue, HttpResponse.BodyHandlers.ofString());
+        JSONArray mktCatData = new JSONArray(response.body());
+
+        marketCatalogue.addMarketNameFromJsonResponse(mktCatData);
+        return response.body();
+    }
+
 }
 
 

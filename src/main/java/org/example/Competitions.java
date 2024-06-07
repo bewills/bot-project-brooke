@@ -13,7 +13,7 @@ public class Competitions {
     public String compName;
 
     public static ArrayList<String> compList = new ArrayList<>();
-    private static Map<String, String> compMap = new HashMap<>();
+    private static final Map<String, String> compMap = new HashMap<>();
 
 
     public Competitions(String compId, String compName) {
@@ -22,7 +22,7 @@ public class Competitions {
         compList.add(compName);
         compList.add(compId);
         compMap.put(compName, compId);
-//        System.out.println(compMap);
+
     }
 
     public static void addCompNamesFromJsonResponse(JSONArray competitionsData) {
@@ -31,7 +31,6 @@ public class Competitions {
             for (int i = 0; i < competitionsData.length(); i++) {
                 JSONObject compObject = competitionsData.getJSONObject(i);
                 JSONObject compTypeObject = compObject.getJSONObject("competition");
-//                System.out.println(compTypeObject);
                 String compName = compTypeObject.getString("name").toLowerCase().trim();
                 String compId = compTypeObject.getString("id");
                 compList.add(compName);
