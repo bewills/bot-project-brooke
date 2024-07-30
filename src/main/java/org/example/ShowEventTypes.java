@@ -2,6 +2,7 @@ package org.example;
 import java.io.IOException;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -19,10 +20,23 @@ public class ShowEventTypes {
 
 
         HttpResponse<String> response = httpClient.send(allEventTypeRequest, HttpResponse.BodyHandlers.ofString());
-        JSONArray responseData = new JSONArray(response.body());
+        String responseBody = response.body();
+        System.out.println("Response Body: " + responseBody);
 
-        EventType.addEventNamesFromJsonResponse(responseData);
-        System.out.println(responseData);
+        try {
+            JSONArray responseData = new JSONArray(response.body());
+            EventType.addEventNamesFromJsonResponse(responseData);
+        }
+        catch (JSONException e){
+            System.err.println("Failed: " + e.getMessage());
+        }
+        //for me
+//        System.out.println("Response Body: " + responseData);
+//
+//
+//
+//        EventType.addEventNamesFromJsonResponse(responseData);
+//        System.out.println(responseData);
         return response.body();
 
     }

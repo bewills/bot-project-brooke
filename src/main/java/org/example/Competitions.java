@@ -15,14 +15,12 @@ public class Competitions {
     public static ArrayList<String> compList = new ArrayList<>();
     private static final Map<String, String> compMap = new HashMap<>();
 
-
     public Competitions(String compId, String compName) {
         Competitions.compId = compId;
         this.compName = compName;
         compList.add(compName);
         compList.add(compId);
         compMap.put(compName, compId);
-
     }
 
     public static void addCompNamesFromJsonResponse(JSONArray competitionsData) {
@@ -39,7 +37,8 @@ public class Competitions {
 //            System.out.println(compMap);
         } else {
 
-            System.out.println("No competitions available for today!");
+            System.out.println("No competitions available for today! Please start again");
+            System.exit(0);
         }
 
 

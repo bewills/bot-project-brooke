@@ -10,6 +10,7 @@ public class Constants {
 
     public static final String listEvents ="listEvents/";
 
+    public static final String placeOrders = "placeOrders/";
 
 
 

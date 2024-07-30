@@ -19,5 +19,3 @@ public class GetToken {
     }
 }
 
-//create session object - product id, session token, status of request
-//dao class - read

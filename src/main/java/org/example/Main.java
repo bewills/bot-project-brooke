@@ -2,6 +2,7 @@ package org.example;
 
 import java.net.http.HttpRequest;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
 
@@ -9,18 +10,16 @@ import static org.example.Competitions.*;
 import static org.example.EventType.eventTypeList;
 import static org.example.EventType.eventTypeList;
 import static org.example.Events.eventList;
-import static org.example.marketCatalogue.mktCatList;
+import static org.example.marketCatalogue.*;
 
 public class Main {
-
+   public static final String userName = "sharedservices";
+   public static final String passWord = "p@ssword03";
+    public static final String applicationKey = "npo67wopV4oKVu5g";
+    public static final String apiUrlLogin = "https://identitysso.nxt.com.betfair/api/login?username=" + userName + "&password=" + passWord;
+//
 
     public static void main(String[] args) throws Exception {
-
-        final String userName = "sharedservices";
-        final String passWord = "p@ssword03";
-        final String applicationKey = "npo67wopV4oKVu5g";
-        final String apiUrlLogin = "https://identitysso.nxt.com.betfair/api/login?username=" + userName + "&password=" + passWord;
-//
 
 //call api request class
         ApiRequest apiRequest = new ApiRequest(applicationKey);
@@ -33,7 +32,7 @@ public class Main {
 //extract token
         GetToken getToken = new GetToken(responseBody);
         String token = getToken.extractToken();
-        System.out.println("Session token is: " + token); // user logger here
+//        System.out.println("Session token is: " + token); // user logger here
 //retrieve events to choose from
 
         ShowEventTypes showEventTypes = new ShowEventTypes();
@@ -72,14 +71,11 @@ public class Main {
         }
 // user decides on available competitions
         String userCompChoice;
-
-
         while (true) {
             userCompChoice = scanner.nextLine().toLowerCase().trim();
             if (compSet.contains(userCompChoice.toLowerCase())) {
                 System.out.println("You selected " + userCompChoice);
-//                String userCompId = getCompId(userCompChoice.toLowerCase().trim());
-//                System.out.println(userCompId); // test to see if retrieving id
+
                 break;
             } else {
                 System.out.println("Invalid choice. Please choose from the provided list.");
@@ -107,29 +103,86 @@ public class Main {
 
         }
 
-        System.out.println("Please choose from the following markets to see market data, please choose one: ");
+        System.out.println("Please select a market to place a bet on: ");
         String userCompIdForMkts = null;
         String availableMarkets = apiRequest.callMktCat(token, applicationKey, userCompIdForMkts, userCompChoice);
         System.out.println(mktCatList);
 
+
         Set<String> mktCatSet = new HashSet<>();
         for (String event : mktCatList) {
             mktCatSet.add(event.trim().toLowerCase());
-        String userMarketChoice;
+            String userMarketChoice;
 
-        while (true){
-            userMarketChoice = scanner.nextLine().toLowerCase().trim();
-            if (mktCatSet.contains(userMarketChoice.toLowerCase())){
-                System.out.println("You selected " + userMarketChoice);
-                break;
-            }
-            else {
-                System.out.println("Invalid choice. Please choose from the provided list.");
-            }
 
-        }
-    }
-}}
+            while (true) {
+                userMarketChoice = scanner.nextLine().toLowerCase().trim();
+                if (mktCatSet.contains(userMarketChoice.toLowerCase())) {
+                    System.out.println("You selected " + userMarketChoice);
+                    if (mktCatMap.containsKey(userMarketChoice)) {
+                        String userMarketId = mktCatMap.get(userMarketChoice);
+                        System.out.println(userMarketId);
+
+                        System.out.println("You selected " + userMarketChoice + " and the market id is: " + userMarketId);
+                        List<String> runners = marketCatalogue.getRunnersForMarketId(userMarketId);
+                        System.out.println(runners);
+                        if (runners.isEmpty()) {
+                            System.out.println("No runners found for this market.");
+                        } else {
+                            System.out.println("Please choose a runner to place your bet on: ");
+                            for (String runnerName : runners) {
+                                System.out.println("Runner Name: " + runnerName);
+
+                            }
+                            String runnerChoice = scanner.nextLine().toLowerCase().trim();
+                            String userSelectionId = marketCatalogue.getSelectionIdForRunner(runnerChoice);
+                            if (userSelectionId != null) {
+                                System.out.println("Selection ID for runner " + runnerChoice + " is: " + userSelectionId);
+
+                                System.out.println("Would you like to place a 'lay' or 'back' bet? ");
+                                String betType = scanner.nextLine().toLowerCase().trim();
+                                while (!betType.equals("lay") && !betType.equals("back")) {
+                                    System.out.println("Invalid choice. Please enter 'lay' or 'back': ");
+                                    betType = scanner.nextLine().toLowerCase().trim();
+                                }
+                                System.out.println("How much would you like to bet? ");
+                                double betAmount;
+                                while (true) {
+                                    try {
+                                        betAmount = Double.parseDouble(scanner.nextLine().trim());
+                                        if (betAmount <= 0) {
+                                            System.out.println("Please enter a positive amount.");
+                                        } else {
+                                            break;
+                                        }
+                                    } catch (NumberFormatException e) {
+                                        System.out.println("Invalid amount. Please enter a number.");
+                                    }
+                                }
+
+                                // Confirm bet details
+                                System.out.println("You are about to place a " + betType + " bet of " + betAmount + " on runner " + userSelectionID + " (Selection ID: " + selectionId + ").");
+                            } else {
+                                System.out.println("Selection ID not found for runner " + userSelectionID);
+                            }
+
+                        }
+                } else {
+                    System.out.println("No runners found for this market.");
+                }
+            }
+                else{
+                     System.out.println("Invalid choice. Please choose from the provided list.");
+                }
+                }
+
+
+
+
+}}}
+
+
+
 
 
 
