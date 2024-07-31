@@ -1,13 +1,26 @@
 package org.example;
-//PlaceOrders: we try to place a bet, based on the previous request we provide the following:
-//        * marketId: the market id
-//             * selectionId: the runner selection id we want to place the bet on
-//             * side: BACK - specify side, can be Back or Lay
-//             * orderType: LIMIT - specify order type
-//             * size: the size of the bet
-//             * price: the price of the bet
-//             * customerRef: 1 - unique reference for a transaction specified by user, must be different for each request
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 public class PlaceOrders {
 
+    public String status;
 
-}
+    public void placeOrders (String status){
+
+        this.status = status;
+    }
+    public static void addOrdersFromJsonResponse(JSONArray orderData) {
+        if (orderData != null && orderData.length() > 0) {
+
+            for (int i = 0; i < orderData.length(); i++) {
+                JSONObject orderObject = orderData.getJSONObject(i);
+                String status = orderObject.getString("name").toLowerCase().trim();
+           }
+        } else {
+
+            System.out.println("Order not successful");
+            System.exit(0);
+        }
+}}

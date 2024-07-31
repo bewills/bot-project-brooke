@@ -9,10 +9,12 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.Locale;
 
 
 import static java.net.http.HttpRequest.*;
 import static org.example.Constants.*;
+import static org.example.marketCatalogue.marketId;
 
 public class ApiRequest {
 
@@ -95,12 +97,15 @@ public class ApiRequest {
         return response.body();
     }
 
-    public static HttpRequest createMarketCatalogue(String token, String applicationKey, String userCompIdForMkts) {
+    public static  HttpRequest createMarketCatalogue(String token, String applicationKey, String userCompIdForMkts) {
 
         String requestMktCatBody = String.format(
-                "{\"filter\": {\"competitionIds\": [\"%s\"]}, \"maxResults\": 5, \"inPlayOnly\": true, \"marketProjection\": [\"COMPETITION\", \"EVENT\", \"EVENT_TYPE\", \"RUNNER_DESCRIPTION\"] }",
+                "{\"filter\": {\"competitionIds\": [\"%s\"]}, " +
+                        "\"maxResults\": 10, \"inPlayOnly\": true, \"marketProjection\": [\"COMPETITION\", \"EVENT\", \"EVENT_TYPE\", \"RUNNER_DESCRIPTION\"] }",
                 userCompIdForMkts
+//                "eventIds": ["%s"], "marketIds": ["%s"]
         );
+
         return newBuilder()
                 .uri(URI.create(apiURL + listMarketCatalogue))
                 .header("X-Application", applicationKey)
@@ -116,7 +121,6 @@ public class ApiRequest {
 
         HttpClient httpClient = HttpClient.newHttpClient();
         HttpRequest createMarketCatalogue = ApiRequest.createMarketCatalogue(token, applicationKey, userCompIdForMkts);
-        System.out.println(createMarketCatalogue); //testing
         HttpResponse<String> response = httpClient.send(createMarketCatalogue, HttpResponse.BodyHandlers.ofString());
         JSONArray mktCatData = new JSONArray(response.body());
 
@@ -125,42 +129,43 @@ public class ApiRequest {
     }
 
 
-    public static HttpRequest createMarketBook(String token, String applicationKey, String userMarketId) {
-
-
-        String requestMktBookBody = String.format(
-                "{\"filter\": {\"marketIds\": [\"%s\"]}, \"orderProjection\": \"EXECUTABLE\", \"matchProjection\": \"ROLLED_UP_BY_AVG_PRICE\"}",
-                userMarketId
-        );
-        return newBuilder()
-                .uri(URI.create(apiURL + listMarketBook))
-                .header("X-Application", applicationKey)
-                .header("Accept", "application/json")
-                .header("Content-Type", "application/json")
-                .header("X-Authentication", token)
-                .POST(BodyPublishers.ofString(requestMktBookBody))
-                .build();
-    }
-
-    public String callMktBook(String token, String applicationKey, String userMarketId) throws IOException, InterruptedException {
-
-
-        HttpClient httpClient = HttpClient.newHttpClient();
-        HttpRequest createMarketBook = ApiRequest.createMarketCatalogue(token, applicationKey, userMarketId);
-        HttpResponse<String> response = httpClient.send(createMarketBook, HttpResponse.BodyHandlers.ofString());
-        JSONArray mktBookData = new JSONArray(response.body());
-
-        marketCatalogue.addMarketNameFromJsonResponse(mktBookData);
-        return response.body();
-    }
+//    public static HttpRequest createMarketBook(String token, String applicationKey, String userMarketId) {
+//
+//
+//        String requestMktBookBody = String.format(
+//                "{\"filter\": {\"marketIds\": [\"%s\"]}, \"orderProjection\": \"EXECUTABLE\", \"matchProjection\": \"ROLLED_UP_BY_AVG_PRICE\"}",
+//                userMarketId
+//        );
+//        return newBuilder()
+//                .uri(URI.create(apiURL + listMarketBook))
+//                .header("X-Application", applicationKey)
+//                .header("Accept", "application/json")
+//                .header("Content-Type", "application/json")
+//                .header("X-Authentication", token)
+//                .POST(BodyPublishers.ofString(requestMktBookBody))
+//                .build();
+//    }
+//
+//    public String callMktBook(String token, String applicationKey, String userMarketId) throws IOException, InterruptedException {
+//
+//
+//        HttpClient httpClient = HttpClient.newHttpClient();
+//        HttpRequest createMarketBook = ApiRequest.createMarketCatalogue(token, applicationKey, userMarketId);
+//        HttpResponse<String> response = httpClient.send(createMarketBook, HttpResponse.BodyHandlers.ofString());
+//        JSONArray mktBookData = new JSONArray(response.body());
+//
+//        marketCatalogue.addMarketNameFromJsonResponse(mktBookData);
+//        return response.body();
+//    }
 
     public static HttpRequest createOrder(String token, String applicationKey, String userMarketId, String userSelectionId, String betType, double betAmount) {
         String requestOrder = String.format(
                 "{\"marketId\": \"%s\", \"instructions\": [{\"selectionId\": \"%s\", \"handicap\": \"0\", \"side\": \"%s\", \"orderType\": \"LIMIT\", \"limitOrder\": {\"size\": %f, \"price\": 2.0, \"persistenceType\": \"LAPSE\"}}]}",
-                userMarketId, userSelectionId, betType, betAmount);
+                userMarketId, userSelectionId, betType.toUpperCase(), betAmount);
+
 
         return newBuilder()
-                .uri(URI.create(apiURL + listMarketBook))
+                .uri(URI.create(apiURL + placeOrders))
                 .header("X-Application", applicationKey)
                 .header("Accept", "application/json")
                 .header("Content-Type", "application/json")
@@ -176,20 +181,11 @@ public class ApiRequest {
         HttpRequest createOrder = ApiRequest.createOrder(token, applicationKey, userMarketId, userSelectionID, betType, betAmount);
         HttpResponse<String> response = httpClient.send(createOrder, HttpResponse.BodyHandlers.ofString());
         String responseBody = response.body();
-        System.out.println("Response Body: " + responseBody);
-        try {
-            JSONArray orderData = new JSONArray(responseBody);
-            marketCatalogue.addMarketNameFromJsonResponse(orderData);
-        } catch (JSONException e1) {
-            try {
-                JSONObject orderData = new JSONObject(responseBody);
-                System.out.println("Parsed JSON Object: " + orderData);
-                // Handle the JSONObject response appropriately
-            } catch (JSONException e2) {
-                System.err.println("Failed to parse response as JSON object: " + e2.getMessage());
-                // Handle other response formats or errors
-            }
-        }
+        System.out.println(responseBody);
+
+        JSONArray orderData = new JSONArray(responseBody);
+        PlaceOrders.addOrdersFromJsonResponse(orderData);
+
 
         return responseBody;
     }

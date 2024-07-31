@@ -9,18 +9,18 @@ import java.util.Map;
 
 public class Events {
 
-    public String eventId;
-    public String eventName;
+    public static String eventId;
+    public static String eventName;
 
     public static ArrayList<String> eventList = new ArrayList<>();
-    private static Map<String, String> eventMap = new HashMap<>();
+    public static Map<String, String> eventsMap = new HashMap<>();
 
     public Events (String eventId, String eventName){
 
         this.eventId = eventId;
         this.eventName = eventName;
         eventList.add(eventName);
-        eventMap.put(eventName, eventId);
+        eventsMap.put(eventName.toLowerCase().trim(), eventId);
     }
 
     public static void addEventsFromJsonResponse(JSONArray eventsData){
@@ -31,10 +31,20 @@ public class Events {
                 String eventName = eventObjectDetails.getString("name");
                 String eventId = eventObjectDetails.getString("id");
                 eventList.add(eventName);
+                eventsMap.put(eventName, eventId);
 
             }
 
         }
 
     }
+//    public static String getEventId (String userEventChoice) {
+//        return eventMap.get(userEventChoice.toLowerCase().trim());
+//    }
+
+    public static String getEventId(String userEventChoice) {
+        return eventsMap.getOrDefault(userEventChoice.toLowerCase().trim(), null);
+    }
+
 }
+
