@@ -1,5 +1,6 @@
 package org.example;
 
+import org.example.responsemanagment.ApiRequest;
 import org.junit.jupiter.api.Test;
 
 import java.net.URI;

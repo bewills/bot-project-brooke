@@ -1,6 +1,8 @@
-package org.example;
+package org.example.responsemanagment;
 import java.io.IOException;
 
+import org.example.responsemanagment.ApiRequest;
+import org.example.responsemanagment.EventType;
 import org.json.JSONArray;
 import org.json.JSONException;
 

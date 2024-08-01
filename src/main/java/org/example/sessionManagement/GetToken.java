@@ -1,4 +1,4 @@
-package org.example;
+package org.example.sessionManagement;
 
 
 import org.json.JSONObject;

@@ -1,4 +1,4 @@
-package org.example;
+package org.example.responsemanagment;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
@@ -17,6 +17,3 @@ public class Response {
         return response.body();
     }
 }
-//error codes
-//if succesful
-//response - needs to json string of response and response codes

@@ -1,4 +1,4 @@
-package org.example;
+package org.example.responsemanagment;
 import org.json.JSONArray;
 import org.json.JSONObject;
 

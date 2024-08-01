@@ -1,5 +1,6 @@
 package org.example;
 
+import org.example.sessionManagement.GetToken;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

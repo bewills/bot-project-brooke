@@ -1,4 +1,4 @@
-package org.example;
+package org.example.responsemanagment;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -15,13 +15,13 @@ public class Events {
     public static ArrayList<String> eventList = new ArrayList<>();
     public static Map<String, String> eventsMap = new HashMap<>();
 
-    public Events (String eventId, String eventName){
-
-        this.eventId = eventId;
-        this.eventName = eventName;
-        eventList.add(eventName);
-        eventsMap.put(eventName.toLowerCase().trim(), eventId);
-    }
+//    public Events (String eventId, String eventName){
+//
+//        this.eventId = eventId;
+//        this.eventName = eventName;
+//        eventList.add(eventName);
+//        eventsMap.put(eventName.toLowerCase().trim(), eventId);
+//    }
 
     public static void addEventsFromJsonResponse(JSONArray eventsData){
         if (eventsData != null && eventsData.length() > 0) {
@@ -31,7 +31,7 @@ public class Events {
                 String eventName = eventObjectDetails.getString("name");
                 String eventId = eventObjectDetails.getString("id");
                 eventList.add(eventName);
-                eventsMap.put(eventName, eventId);
+                eventsMap.put(eventName.toLowerCase().trim(), eventId);
 
             }
 

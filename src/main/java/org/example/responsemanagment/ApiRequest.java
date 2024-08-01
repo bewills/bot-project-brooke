@@ -1,20 +1,16 @@
-package org.example;
+package org.example.responsemanagment;
 
 import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.util.Locale;
 
 
 import static java.net.http.HttpRequest.*;
-import static org.example.Constants.*;
-import static org.example.marketCatalogue.marketId;
+import static org.example.sessionManagement.Constants.*;
 
 public class ApiRequest {
 
@@ -97,13 +93,13 @@ public class ApiRequest {
         return response.body();
     }
 
-    public static  HttpRequest createMarketCatalogue(String token, String applicationKey, String userCompIdForMkts) {
+    public static  HttpRequest createMarketCatalogue(String token, String applicationKey, String userEventID) {
 
         String requestMktCatBody = String.format(
-                "{\"filter\": {\"competitionIds\": [\"%s\"]}, " +
+                "{\"filter\": {\"eventIds\": [\"%s\"]}, " +
                         "\"maxResults\": 10, \"inPlayOnly\": true, \"marketProjection\": [\"COMPETITION\", \"EVENT\", \"EVENT_TYPE\", \"RUNNER_DESCRIPTION\"] }",
-                userCompIdForMkts
-//                "eventIds": ["%s"], "marketIds": ["%s"]
+                 userEventID
+
         );
 
         return newBuilder()
@@ -116,13 +112,14 @@ public class ApiRequest {
                 .build();
     }
 
-    public String callMktCat(String token, String applicationKey, String userCompChoice) throws IOException, InterruptedException {
-        String userCompIdForMkts = Competitions.getCompId(userCompChoice);
+    public String callMktCat(String token, String applicationKey, String userEventID) throws IOException, InterruptedException {
+//        String userCompIdForMkts = Competitions.getCompId(userCompChoice);
 
         HttpClient httpClient = HttpClient.newHttpClient();
-        HttpRequest createMarketCatalogue = ApiRequest.createMarketCatalogue(token, applicationKey, userCompIdForMkts);
+        HttpRequest createMarketCatalogue = ApiRequest.createMarketCatalogue(token, applicationKey, userEventID);
         HttpResponse<String> response = httpClient.send(createMarketCatalogue, HttpResponse.BodyHandlers.ofString());
         JSONArray mktCatData = new JSONArray(response.body());
+
 
         marketCatalogue.addMarketNameFromJsonResponse(mktCatData);
         return response.body();
@@ -155,6 +152,7 @@ public class ApiRequest {
 //        JSONArray mktBookData = new JSONArray(response.body());
 //
 //        marketCatalogue.addMarketNameFromJsonResponse(mktBookData);
+//        System.out.println(response.body());
 //        return response.body();
 //    }
 
